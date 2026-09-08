@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/mnt/hgfs/share/C/Src/build",
+  "command": "/usr/bin/gcc  -I/mnt/hgfs/share/C/Src -I/mnt/hgfs/share/C/Src/Server -I/mnt/hgfs/share/C/Src/Client -I/mnt/hgfs/share/C/Src/User -g -o CMakeFiles/Pro.dir/main.c.o -c /mnt/hgfs/share/C/Src/main.c",
+  "file": "/mnt/hgfs/share/C/Src/main.c",
+  "output": "CMakeFiles/Pro.dir/main.c.o"
+},
+{
+  "directory": "/mnt/hgfs/share/C/Src/build",
+  "command": "/usr/bin/gcc  -I/mnt/hgfs/share/C/Src -I/mnt/hgfs/share/C/Src/Server -I/mnt/hgfs/share/C/Src/Client -I/mnt/hgfs/share/C/Src/User -g -o CMakeFiles/Pro.dir/Server/Server.c.o -c /mnt/hgfs/share/C/Src/Server/Server.c",
+  "file": "/mnt/hgfs/share/C/Src/Server/Server.c",
+  "output": "CMakeFiles/Pro.dir/Server/Server.c.o"
+},
+{
+  "directory": "/mnt/hgfs/share/C/Src/build",
+  "command": "/usr/bin/gcc  -I/mnt/hgfs/share/C/Src -I/mnt/hgfs/share/C/Src/Server -I/mnt/hgfs/share/C/Src/Client -I/mnt/hgfs/share/C/Src/User -g -o CMakeFiles/Pro.dir/Client/Client.c.o -c /mnt/hgfs/share/C/Src/Client/Client.c",
+  "file": "/mnt/hgfs/share/C/Src/Client/Client.c",
+  "output": "CMakeFiles/Pro.dir/Client/Client.c.o"
+},
+{
+  "directory": "/mnt/hgfs/share/C/Src/build",
+  "command": "/usr/bin/gcc  -I/mnt/hgfs/share/C/Src -I/mnt/hgfs/share/C/Src/Server -I/mnt/hgfs/share/C/Src/Client -I/mnt/hgfs/share/C/Src/User -g -o CMakeFiles/Pro.dir/User/user.c.o -c /mnt/hgfs/share/C/Src/User/user.c",
+  "file": "/mnt/hgfs/share/C/Src/User/user.c",
+  "output": "CMakeFiles/Pro.dir/User/user.c.o"
+},
+{
+  "directory": "/mnt/hgfs/share/C/Src/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/Client.dir/Client/Client.c.o -c /mnt/hgfs/share/C/Src/Client/Client.c",
+  "file": "/mnt/hgfs/share/C/Src/Client/Client.c",
+  "output": "CMakeFiles/Client.dir/Client/Client.c.o"
+}
+]
