@@ -6,16 +6,21 @@ add_executable(Pro
     main.c
     Server/Server.c
     Client/Client.c
-    User/user.c
+    pool/pool.c
 )
 add_executable(Client
     Client/Client.c
     main.h
 )
 
+add_executable(pool
+    pool/pool.c
+    pool/pool.h
+)
+
 target_include_directories(Pro PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/Server
     ${CMAKE_CURRENT_SOURCE_DIR}/Client
-    ${CMAKE_CURRENT_SOURCE_DIR}/User
+    ${CMAKE_CURRENT_SOURCE_DIR}/pool
 )

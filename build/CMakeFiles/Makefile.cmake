@@ -56,4 +56,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/Pro.dir/DependInfo.cmake"
   "CMakeFiles/Client.dir/DependInfo.cmake"
+  "CMakeFiles/pool.dir/DependInfo.cmake"
   )

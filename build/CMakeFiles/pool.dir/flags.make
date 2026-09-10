@@ -4,7 +4,7 @@
 # compile C with /usr/bin/gcc
 C_DEFINES = 
 
-C_INCLUDES = -I/mnt/hgfs/share/C/Src -I/mnt/hgfs/share/C/Src/Server -I/mnt/hgfs/share/C/Src/Client -I/mnt/hgfs/share/C/Src/pool
+C_INCLUDES = 
 
 C_FLAGS = -g
 

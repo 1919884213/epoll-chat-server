@@ -1,4 +1,5 @@
 /mnt/hgfs/share/C/Src/build/CMakeFiles/Pro.dir
 /mnt/hgfs/share/C/Src/build/CMakeFiles/Client.dir
+/mnt/hgfs/share/C/Src/build/CMakeFiles/pool.dir
 /mnt/hgfs/share/C/Src/build/CMakeFiles/edit_cache.dir
 /mnt/hgfs/share/C/Src/build/CMakeFiles/rebuild_cache.dir

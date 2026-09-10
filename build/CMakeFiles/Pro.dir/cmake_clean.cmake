@@ -4,10 +4,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/Pro.dir/Client/Client.c.o.d"
   "CMakeFiles/Pro.dir/Server/Server.c.o"
   "CMakeFiles/Pro.dir/Server/Server.c.o.d"
-  "CMakeFiles/Pro.dir/User/user.c.o"
-  "CMakeFiles/Pro.dir/User/user.c.o.d"
   "CMakeFiles/Pro.dir/main.c.o"
   "CMakeFiles/Pro.dir/main.c.o.d"
+  "CMakeFiles/Pro.dir/pool/pool.c.o"
+  "CMakeFiles/Pro.dir/pool/pool.c.o.d"
   "Pro"
   "Pro.pdb"
 )

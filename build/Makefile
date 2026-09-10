@@ -142,6 +142,19 @@ Client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/build
 .PHONY : Client/fast
 
+#=============================================================================
+# Target rules for targets named pool
+
+# Build rule for target.
+pool: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pool
+.PHONY : pool
+
+# fast build rule for target.
+pool/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pool.dir/build.make CMakeFiles/pool.dir/build
+.PHONY : pool/fast
+
 Client/Client.o: Client/Client.c.o
 .PHONY : Client/Client.o
 
@@ -193,30 +206,6 @@ Server/Server.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/Server/Server.c.s
 .PHONY : Server/Server.c.s
 
-User/user.o: User/user.c.o
-.PHONY : User/user.o
-
-# target to build an object file
-User/user.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/User/user.c.o
-.PHONY : User/user.c.o
-
-User/user.i: User/user.c.i
-.PHONY : User/user.i
-
-# target to preprocess a source file
-User/user.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/User/user.c.i
-.PHONY : User/user.c.i
-
-User/user.s: User/user.c.s
-.PHONY : User/user.s
-
-# target to generate assembly for a file
-User/user.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/User/user.c.s
-.PHONY : User/user.c.s
-
 main.o: main.c.o
 .PHONY : main.o
 
@@ -241,6 +230,33 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/main.c.s
 .PHONY : main.c.s
 
+pool/pool.o: pool/pool.c.o
+.PHONY : pool/pool.o
+
+# target to build an object file
+pool/pool.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/pool/pool.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pool.dir/build.make CMakeFiles/pool.dir/pool/pool.c.o
+.PHONY : pool/pool.c.o
+
+pool/pool.i: pool/pool.c.i
+.PHONY : pool/pool.i
+
+# target to preprocess a source file
+pool/pool.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/pool/pool.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pool.dir/build.make CMakeFiles/pool.dir/pool/pool.c.i
+.PHONY : pool/pool.c.i
+
+pool/pool.s: pool/pool.c.s
+.PHONY : pool/pool.s
+
+# target to generate assembly for a file
+pool/pool.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pro.dir/build.make CMakeFiles/Pro.dir/pool/pool.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pool.dir/build.make CMakeFiles/pool.dir/pool/pool.c.s
+.PHONY : pool/pool.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -251,18 +267,19 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Client"
 	@echo "... Pro"
+	@echo "... pool"
 	@echo "... Client/Client.o"
 	@echo "... Client/Client.i"
 	@echo "... Client/Client.s"
 	@echo "... Server/Server.o"
 	@echo "... Server/Server.i"
 	@echo "... Server/Server.s"
-	@echo "... User/user.o"
-	@echo "... User/user.i"
-	@echo "... User/user.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... pool/pool.o"
+	@echo "... pool/pool.i"
+	@echo "... pool/pool.s"
 .PHONY : help
 
 

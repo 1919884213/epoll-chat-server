@@ -8,11 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/mnt/hgfs/share/C/Src/Client/Client.c" "CMakeFiles/Pro.dir/Client/Client.c.o" "gcc" "CMakeFiles/Pro.dir/Client/Client.c.o.d"
-  "/mnt/hgfs/share/C/Src/Server/Server.c" "CMakeFiles/Pro.dir/Server/Server.c.o" "gcc" "CMakeFiles/Pro.dir/Server/Server.c.o.d"
-  "/mnt/hgfs/share/C/Src/main.c" "CMakeFiles/Pro.dir/main.c.o" "gcc" "CMakeFiles/Pro.dir/main.c.o.d"
-  "/mnt/hgfs/share/C/Src/pool/pool.c" "CMakeFiles/Pro.dir/pool/pool.c.o" "gcc" "CMakeFiles/Pro.dir/pool/pool.c.o.d"
-  "" "Pro" "gcc" "CMakeFiles/Pro.dir/link.d"
+  "/mnt/hgfs/share/C/Src/pool/pool.c" "CMakeFiles/pool.dir/pool/pool.c.o" "gcc" "CMakeFiles/pool.dir/pool/pool.c.o.d"
+  "" "pool" "gcc" "CMakeFiles/pool.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
