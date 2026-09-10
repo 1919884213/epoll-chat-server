@@ -25,7 +25,7 @@ static void* worker_loop(void* arg) {
   }
   return NULL;
 }
-
+//创建线程池
 Threadpool* pool_create(int num) {
   if (num <= 0)
     return NULL;
@@ -33,12 +33,12 @@ Threadpool* pool_create(int num) {
   if (pool == NULL)
     return NULL;
   pool->num = num;
-  pool->workers = (Worker*)malloc(sizeof(Worker) * num);
+  pool->workers = (Worker*)malloc(sizeof(Worker) * num); //申请每个线程的空间
   if (pool->workers == NULL) {
     free(pool);
     return NULL;
   }
-
+  //构建num个线程
   for (int i = 0; i < num; i++) {
     Worker* w = &pool->workers[i];
     // 哨兵节点，队首队尾均指向它表示队列为空

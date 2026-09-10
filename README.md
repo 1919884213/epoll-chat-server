@@ -30,6 +30,59 @@
 - **`EPOLLET` 边沿触发**：必须循环 `read` 直到 `EAGAIN`，一次性读干净内核缓冲区。
 - **连接表**：`fd -> worker` 映射，断开时 `EPOLL_CTL_DEL` + `close` + 回收表项。
 
+## 客户端与任务是如何绑定的
+
+核心数据是连接表 `g_worker_of_fd[]`：**下标 = fd，值 = 该 fd 所属的 worker 下标**（`-1` 表示空闲）。整个绑定贯穿一条完整链路，分 4 步：
+
+### 1. 分配归属（主线程 accept 时登记）
+```c
+int wi = next_worker;                          // 选一个 worker 下标
+next_worker = (next_worker + 1) % pool->num;   // round-robin，负载均衡
+g_worker_of_fd[cfd] = wi;                      // 记录 fd -> worker 归属
+```
+建立**第一层绑定：fd → worker 下标**。每个新连接按轮流算法分给一个 worker，所有 `fd` 初始为 `-1`。
+
+### 2. 任务打包（主线程，客户端可读事件到来时）
+```c
+int wi = g_worker_of_fd[fd];    // 反查该 fd 属于哪个 worker
+Conn* c = malloc(sizeof(Conn)); // 打包任务上下文
+c->fd = fd;                     // 要处理哪个 fd
+c->worker_index = wi;           // 该交给哪个 worker
+pool_submit(pool, wi, handle_conn, c);  // 投进 worker wi 的任务队列
+```
+建立**第二层绑定：任务对象（Conn）→ worker 下标**。`Conn` 把"要处理的 fd"和"负责它的 worker"打包在一起，作为任务参数。
+
+### 3. 真正执行（worker 线程从自己的队列取任务）
+```c
+// pool_submit 内部 / worker_loop：
+while (队列非空) {
+  Task* t = 出队(worker wi 的队列);
+  t->fn(t->arg);   // 即 handle_conn(c)，c->fd 就是要处理的连接
+}
+```
+每个 worker **只处理自己队列里的任务**，而这些任务都是主线程按 `worker_index` 精确投递的。因此 worker `wi` 只会处理"被登记为 `wi` 的那些 fd"。
+
+### 4. 重新武装（worker 处理完，回到 epoll）
+```c
+ev.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
+epoll_ctl(c->epfd, EPOLL_CTL_MOD, c->fd, &ev);  // 重新触发，等下一次可读
+```
+
+### 完整数据流（以 fd=100 为例）
+```
+1. accept(100)       ->  g_worker_of_fd[100] = 2        （fd→worker 映射）
+2. epoll 报 100 可读 ->  wi = g_worker_of_fd[100] = 2
+3. 打包              ->  Conn{fd=100, worker_index=2}
+4. 投递              ->  pool_submit(pool, 2, handle_conn, Conn) 进 worker2 队列
+5. 执行              ->  worker2 取出任务 -> handle_conn(c) -> read(100) -> PONG
+```
+
+### 为什么这样设计
+- **同一 fd 永远只被同一个 worker 处理**（`worker_index` 贯穿全程），对 fd 的读写天然串行，不会出现两个线程同时操作一个 fd。
+- epoll 只负责"通知主线程哪个 fd 有数据"，主线程只做"派活给对应 worker"，**事件分发与业务处理完全解耦**。
+
+> ⚠️ 已知隐患：`g_worker_of_fd[]` 由主线程写入（accept / close 回滚），但 `close_conn` 在 worker 线程也会把表项改回 `-1`，存在数据竞争，后续需加锁或改用原子操作。
+
 ## 目录结构
 
 ```

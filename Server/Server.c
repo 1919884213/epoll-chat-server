@@ -69,8 +69,7 @@ static void handle_conn(void* arg) {
                c->fd);
       } else {
         /* 非 PING 消息原样回显，便于客户端校验往返 */
-        if (write(c->fd, buf, n) < 0 && errno != EAGAIN &&
-            errno != EWOULDBLOCK)
+        if (write(c->fd, buf, n) < 0 && errno != EAGAIN && errno != EWOULDBLOCK)
           break;
         printf("[INFO] worker %d fd %d: echo %ld bytes\n", c->worker_index,
                c->fd, (long)n);
@@ -143,68 +142,86 @@ void server_run(int serverfd, Threadpool* pool) {
     die("epoll_ctl add listenfd");
 
   struct epoll_event events[64];
-  int next_worker = 0;
+  int next_worker = 0;  // round-robin 游标，决定下一个连接分给哪个 worker
 
+  /*
+   * Reactor 主循环：主线程只做 IO 事件分发，不处理业务。
+   *   - 监听 fd 就绪  -> 循环 accept，把新连接绑到一个 worker 并注册进 epoll
+   *   - 客户端 fd 就绪 -> 打包成 Conn 任务，投递到该 fd 所属 worker 的队列
+   * 真正的 read/write 在 worker 线程的 handle_conn 中执行。
+   */
   while (1) {
+    /* -1 表示无事件时永久阻塞，直到有 fd 就绪才返回；返回就绪个数 nfds */
     int nfds = epoll_wait(g_epfd, events, 64, -1);
     if (nfds < 0) {
-      if (errno == EINTR)
+      if (errno == EINTR)  // 被信号中断，属正常情况，重试即可
         continue;
       die("epoll_wait");
     }
 
     for (int i = 0; i < nfds; i++) {
-      int fd = events[i].data.fd;
+      int fd = events[i].data.fd;  // 事件对应的 fd
 
       if (fd == serverfd) {
-        /* 循环 accept，处理 accept 队列中的全部连接 */
+        /*
+         * 监听套接字可读：有新连接到来。
+         * 监听 fd 用水平触发（EPOLLIN），但这里仍循环 accept 到 EAGAIN，
+         * 以便一次事件就把 accept 队列清空，避免惊群/遗漏。
+         */
         while (1) {
           struct sockaddr_in cli;
           socklen_t len = sizeof(cli);
           int cfd = accept(serverfd, (struct sockaddr*)&cli, &len);
           if (cfd < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-              break;
+              break;  // 已无待处理连接，退出循环
             if (errno == EINTR)
-              continue;
+              continue;  // 被信号打断，重试本次 accept
             perror("accept");
             break;
           }
-          if (cfd >= MAX_CONN) {  // 超出连接表容量
+          if (cfd >= MAX_CONN) {  // fd 超出连接表容量，无法登记
             fprintf(stderr, "[WARN] fd %d exceeds MAX_CONN, rejected\n", cfd);
             close(cfd);
             continue;
           }
-          set_nonblock(cfd);
+          set_nonblock(cfd);  // 客户端 fd 设为非阻塞，配合 ET 一次读干净
 
-          /* round-robin 绑定一个 worker */
+          /* round-robin 绑定一个 worker，使各 worker 负载尽量均衡 */
           int wi = next_worker;
           next_worker = (next_worker + 1) % pool->num;
-          g_worker_of_fd[cfd] = wi;
+          g_worker_of_fd[cfd] = wi;  // 记录归属，后续事件据此投递
 
+          /*
+           * 注册客户端 fd：
+           *   EPOLLET      边沿触发，只在状态变化时通知一次，需读到 EAGAIN
+           *   EPOLLONESHOT 触发一次后自动失效，防止同一连接被多个线程并发处理
+           * 处理完须在 handle_conn 中 MOD 重新武装，否则连接不再被触发。
+           */
           struct epoll_event cev;
           cev.events = EPOLLIN | EPOLLET | EPOLLONESHOT;
           cev.data.fd = cfd;
           if (epoll_ctl(g_epfd, EPOLL_CTL_ADD, cfd, &cev) < 0) {
             perror("epoll_ctl add clientfd");
             close(cfd);
-            g_worker_of_fd[cfd] = -1;
+            g_worker_of_fd[cfd] = -1;  // 注册失败，回滚归属记录
             continue;
           }
           printf("[INFO] client %s:%d connected -> worker %d\n",
                  inet_ntoa(cli.sin_addr), ntohs(cli.sin_port), wi);
         }
       } else {
-        /* 可读事件：投递给该 fd 绑定的 worker */
+        /* 客户端 fd 可读：把该 fd 的处理任务投递给它绑定的 worker */
         int wi = g_worker_of_fd[fd];
         if (wi < 0)
-          continue;  // 连接已被回收，忽略过期事件
-        Conn* c = (Conn*)malloc(sizeof(Conn));
+          continue;  // 连接已被回收（fd 已复用/关闭），忽略此过期事件
+        Conn* c = (Conn*)malloc(sizeof(Conn));  // 任务上下文
         if (c == NULL)
-          continue;
+          continue;  // 内存不足，丢弃本次事件（连接仍可等待下次触发）
         c->fd = fd;
         c->epfd = g_epfd;
         c->worker_index = wi;
+        /* 入队失败（如池已停止）则立即关闭连接，避免资源泄漏 */
         if (pool_submit(pool, wi, handle_conn, c) != 0)
           close_conn(c);
       }
