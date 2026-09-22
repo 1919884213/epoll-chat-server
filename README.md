@@ -1,4 +1,21 @@
-# epoll 多房间聊天室（Reactor + 线程池）
+<div align="center">
+
+# epoll-chat-server
+
+**Reactor + 固定 worker 线程池的多房间 TCP 聊天服务器**
+
+`~1000 行 C` · `epoll ET + EPOLLONESHOT` · `CMake / GCC` · `零第三方依赖`
+
+[![OS](https://img.shields.io/badge/OS-Linux-informational?style=flat-square)](#架构)
+[![Lang](https://img.shields.io/badge/Lang-C-blue?style=flat-square)](#目录结构)
+[![IO](https://img.shields.io/badge/IO-epoll%20ET%20%2B%20ONESHOT-orange?style=flat-square)](#架构)
+[![Pool](https://img.shields.io/badge/pool-fixed%20worker-blueviolet?style=flat-square)](#架构)
+[![Build](https://img.shields.io/badge/Build-CMake-green?style=flat-square)](#编译与运行)
+[![Deps](https://img.shields.io/badge/deps-0-red?style=flat-square)](#架构)
+
+</div>
+
+---
 
 基于 Linux `epoll`（边沿触发 + EPOLLONESHOT）+ 固定 worker 线程池的多房间 TCP 聊天室，C 语言实现，约 1000 行，零第三方依赖。
 
