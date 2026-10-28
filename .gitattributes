@@ -1,0 +1,11 @@
+# 这个项目跑在 Linux 上：所有文本一律 LF 存储 + LF 检出。
+# 否则在 Windows 上 clone 出来的 .sh 会带 CRLF，拷到板子上执行报
+#   bash: ./xxx.sh: /bin/bash^M: bad interpreter
+* text=auto eol=lf
+*.sh   text eol=lf
+*.c    text eol=lf
+*.h    text eol=lf
+*.md   text eol=lf
+*.cmake text eol=lf
+Makefile text eol=lf
+*.rules text eol=lf

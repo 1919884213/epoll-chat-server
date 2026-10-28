@@ -1,0 +1,10 @@
+# /etc/udev/rules.d/99-chatsnap.rules
+#
+# 默认 device_create() 建出来的节点是 root:root 0600 —— 非 root 用户打不开，
+# 面板/监控端就得 sudo，很别扭。这条规则把节点交给 video 组（KickPi 上 kickpi 在其中）。
+#
+# 安装：
+#   sudo cp scripts/99-chatsnap.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload
+#   sudo rmmod chatsnap && sudo insmod chatsnap.ko   # 重新加载以触发规则
+SUBSYSTEM=="chatsnap", KERNEL=="chatsnap", GROUP="video", MODE="0660"

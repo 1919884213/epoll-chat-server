@@ -1,0 +1,20 @@
+# 构建产物
+build/
+
+# 本地分析产物
+.ua/
+
+# 交叉编译 / 工程内构建目录
+build-*/
+gui/build*/
+kernel/chatsnap/build*/
+
+# 内核模块构建产物
+*.ko
+*.o
+*.mod
+*.mod.c
+*.order
+*.symvers
+Module.symvers
+.tmp_versions/
